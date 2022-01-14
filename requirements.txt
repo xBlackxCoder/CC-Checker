@@ -2,4 +2,3 @@ requests
 random
 string
 colorama
-platform

